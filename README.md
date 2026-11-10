@@ -40,3 +40,5 @@ O seletor de emojis reaproveita os dados do GTK 4 instalado, com nomes e palavra
 Este repositório publica o código da extensão. O core do Nandomo e o ZIP que o incorpora dependem de autorização e licença para redistribuição.
 
 Antes da submissão, definir uma licença GPL compatível para a extensão, confirmar a licença do core, remover o atalho padrão de interação com o clipboard e revisar o uso de `gresource` como subprocesso. Testar instalação e remoção em uma sessão GNOME Shell 51 limpa. Depois, enviar o ZIP criado pelo `build.sh` no [formulário do GNOME Extensions](https://extensions.gnome.org/upload/) e aguardar a revisão. Consulte as [regras de revisão](https://gjs.guide/extensions/review-guidelines/review-guidelines.html).
+
+O código da extensão usa BSD-3-Clause. O catálogo Kaomojikan mantém sua licença MIT em `vendor/LICENSE`.
