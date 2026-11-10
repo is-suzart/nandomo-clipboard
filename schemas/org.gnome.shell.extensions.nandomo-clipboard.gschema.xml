@@ -2,6 +2,6 @@
   <schema id="org.gnome.shell.extensions.nandomo-clipboard" path="/org/gnome/shell/extensions/nandomo-clipboard/">
     <key name="pinned" type="as"><default>[]</default></key>
     <key name="klipy-key" type="s"><default>''</default></key>
-    <key name="open-clipboard" type="as"><default>['&lt;Super&gt;&lt;Shift&gt;v']</default></key>
+    <key name="open-clipboard" type="as"><default>[]</default></key>
   </schema>
 </schemalist>

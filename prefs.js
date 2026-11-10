@@ -11,8 +11,20 @@ export default class ClipboardPreferences extends ExtensionPreferences {
       title: t('GIFs do Klipy'),
       description: t('A busca envia o termo digitado ao Klipy. A chave é salva nas configurações locais do GNOME.'),
     });
+    const settings = this.getSettings();
+    const shortcuts = new Adw.PreferencesGroup({ title: t('Atalhos') });
+    const shortcut = new Adw.SwitchRow({
+      title: t('Abrir painel com Super+Shift+V'),
+      active: settings.get_strv('open-clipboard').length > 0,
+    });
+    shortcut.connect('notify::active', () => {
+      settings.set_strv('open-clipboard', shortcut.active ? ['<Super><Shift>v'] : []);
+    });
+    shortcuts.add(shortcut);
+    page.add(shortcuts);
+
     const key = new Adw.PasswordEntryRow({ title: t('Chave de API do Klipy') });
-    this.getSettings().bind('klipy-key', key, 'text', Gio.SettingsBindFlags.DEFAULT);
+    settings.bind('klipy-key', key, 'text', Gio.SettingsBindFlags.DEFAULT);
     group.add(key);
     page.add(group);
     window.add(page);

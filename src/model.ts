@@ -1,4 +1,4 @@
-import { batch, computed, signal } from '../../../packages/core/src/index.js';
+import { batch, computed, signal } from '@nandomo/core';
 
 const MAX_TEXT_LENGTH = 16_384;
 const HISTORY_LIMIT = 60;

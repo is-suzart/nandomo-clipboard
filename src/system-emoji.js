@@ -1,31 +1,21 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
-import { normalizeLocale } from '../../../packages/core/src/i18n.js';
+import { normalizeLocale } from '@nandomo/core';
 
 const RESOURCE = '/org/gtk/libgtk/emoji';
 const GTK_DATA = '/usr/share/gtk-4.0/emoji';
 const TYPE = new GLib.VariantType('a(aussasasu)');
 
-Gio._promisify(Gio.Subprocess.prototype, 'communicate_async', 'communicate_finish');
-
-export async function loadSystemEmoji(cancellable) {
+export function loadSystemEmoji() {
   const locale = normalizeLocale(GLib.get_language_names()[0]);
   const language = locale?.split('-')[0] ?? 'en';
+  if (language === 'en') return [];
   let bytes;
-  if (language !== 'en') {
-    try {
-      bytes = Gio.Resource.load(`${GTK_DATA}/${language}.gresource`)
-        .lookup_data(`${RESOURCE}/${language}.data`, Gio.ResourceLookupFlags.NONE);
-    } catch {
-      // GTK packages do not ship every translation.
-    }
-  }
-  if (!bytes) {
-    const process = Gio.Subprocess.new(
-      ['gresource', 'extract', '/usr/lib/libgtk-4.so.1', `${RESOURCE}/en.data`],
-      Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
-    [bytes] = await process.communicate_async(null, cancellable);
-    if (!process.get_successful() || !bytes) return [];
+  try {
+    bytes = Gio.Resource.load(`${GTK_DATA}/${language}.gresource`)
+      .lookup_data(`${RESOURCE}/${language}.data`, Gio.ResourceLookupFlags.NONE);
+  } catch {
+    return [];
   }
 
   const data = GLib.Variant.new_from_bytes(TYPE, bytes, false);

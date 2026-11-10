@@ -1,6 +1,6 @@
 # Nandomo Clipboard para GNOME Shell
 
-O ícone na barra superior e **Super+Shift+V** abrem o painel. A extensão observa alterações de texto no clipboard Wayland. Selecione um item para copiá-lo e cole no app de destino com o atalho habitual. **Fixar** move um texto para a aba **Fixados**. **Desafixar** devolve ao histórico da sessão.
+O ícone na barra superior abre o painel. Para usar **Super+Shift+V**, ative o atalho nas preferências da extensão. A extensão observa alterações de texto no clipboard Wayland. Selecione um item para copiá-lo e cole no app de destino com o atalho habitual. **Fixar** move um texto para a aba **Fixados**. **Desafixar** devolve ao histórico da sessão.
 
 O histórico guarda até 60 textos distintos em memória. Só os fixados persistem nas configurações locais do GNOME. **Pausar** interrompe a captura e **Limpar histórico** esvazia a lista da sessão. A extensão ignora seleções com marcadores MIME conhecidos de conteúdo sensível. Use a pausa para dados sensíveis em apps que não fornecem esses marcadores.
 
@@ -8,11 +8,10 @@ Emojis e kaomojis são pesquisáveis e funcionam offline. Para GIFs, abra as pre
 
 ## Build e instalação
 
-O build atual usa o checkout privado do Nandomo. Com acesso a ele, copie os arquivos deste repositório para `examples/clipboard-gnome` dentro do Nandomo e rode, a partir da raiz:
+Quem instala pode baixar o ZIP nas [releases](https://github.com/is-suzart/nandomo-clipboard/releases). Para compilar, use um checkout do Nandomo em `../nandomo` ou informe o caminho em `NANDOMO_DIR`:
 
 ```sh
-pnpm install --frozen-lockfile
-cd examples/clipboard-gnome
+pnpm --dir "${NANDOMO_DIR:-../nandomo}" install --frozen-lockfile
 bash build.sh
 gnome-extensions install --force dist/nandomo-clipboard@is-suzart.shell-extension.zip
 ```
@@ -32,13 +31,10 @@ O catálogo inclui 1.708 kaomojis únicos do [Kaomojikan](https://github.com/kao
 
 O GJS consulta o idioma da sessão com `GLib.get_language_names()` e passa o locale para o tradutor do Nandomo. O painel e as preferências usam português para locales `pt` e inglês nos demais. Novos idiomas entram como catálogos em `src/locale.js`.
 
-O seletor de emojis reaproveita os dados do GTK 4 instalado, com nomes e palavras-chave do idioma da sessão quando disponíveis. No CachyOS, os recursos traduzidos ficam em `/usr/share/gtk-4.0/emoji`, e o inglês vem da biblioteca `/usr/lib/libgtk-4.so.1`. Se esses dados não puderem ser lidos, a extensão usa o catálogo básico embutido.
-
+O seletor inclui 3.944 sequências do [Unicode Emoji 17.0](https://www.unicode.org/Public/17.0.0/emoji/emoji-test.txt), com a licença em `vendor/UNICODE-LICENSE`. Recursos de idioma instalados pelo GTK 4 acrescentam nomes e palavras-chave traduzidos quando disponíveis.
 
 ## Publicação no GNOME Extensions
 
-Este repositório publica o código da extensão. O core do Nandomo e o ZIP que o incorpora dependem de autorização e licença para redistribuição.
+Gere o ZIP com `bash build.sh`, teste em um perfil limpo do GNOME Shell 51 e envie pelo [formulário do GNOME Extensions](https://extensions.gnome.org/upload/). A submissão deve ser revisada pelo mantenedor antes de ser enviada. Consulte as [regras de revisão](https://gjs.guide/extensions/review-guidelines/review-guidelines.html).
 
-Antes da submissão, definir uma licença GPL compatível para a extensão, confirmar a licença do core, remover o atalho padrão de interação com o clipboard e revisar o uso de `gresource` como subprocesso. Testar instalação e remoção em uma sessão GNOME Shell 51 limpa. Depois, enviar o ZIP criado pelo `build.sh` no [formulário do GNOME Extensions](https://extensions.gnome.org/upload/) e aguardar a revisão. Consulte as [regras de revisão](https://gjs.guide/extensions/review-guidelines/review-guidelines.html).
-
-O código da extensão usa BSD-3-Clause. O catálogo Kaomojikan mantém sua licença MIT em `vendor/LICENSE`.
+O código da extensão e os trechos do core incluídos no ZIP usam BSD-3-Clause. O catálogo Kaomojikan mantém sua licença MIT em `vendor/LICENSE`.

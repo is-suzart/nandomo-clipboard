@@ -1,7 +1,8 @@
 import GLib from 'gi://GLib';
-import { createTranslator } from '../../../packages/core/src/i18n.js';
+import { createTranslator } from '@nandomo/core';
 
 const en = {
+  'Atalhos': 'Shortcuts', 'Abrir painel com Super+Shift+V': 'Open panel with Super+Shift+V',
   'Todos': 'All', 'Feliz': 'Happy', 'Triste': 'Sad', 'Raiva': 'Angry',
   'Choro': 'Crying', 'Gatos': 'Cats', 'Outros': 'Other',
   'Área de transferência': 'Clipboard',

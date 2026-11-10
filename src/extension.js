@@ -9,8 +9,9 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
-import { batch, effect, signal } from '../../../packages/core/src/index.js';
+import { batch, effect, signal } from '@nandomo/core';
 import { createClipboardModel, matches } from './model.ts';
+import unicodeEmoji from '../vendor/emoji.json';
 import { emoji, kaomoji, kaomojiTabs } from './catalog.js';
 import { t } from './locale.js';
 import { loadSystemEmoji } from './system-emoji.js';
@@ -65,13 +66,13 @@ export default class ClipboardExtension extends Extension {
     this.kaomojiTab = signal('all');
     this.feedback = signal('');
     this.klipy = createKlipy();
-    this.emojis = signal(emoji.map(([value, title]) => [value, t(title), title]));
-    const emojiLoad = this.emojiLoad = new Gio.Cancellable();
-    loadSystemEmoji(emojiLoad).then(entries => {
-      if (!emojiLoad.is_cancelled() && entries.length) this.emojis.set(entries);
-    }).catch(() => {
-      // Keep the built-in catalog on systems without GTK emoji data.
-    });
+    const emojis = new Map(unicodeEmoji.map(([value, name]) => [value, [value, name]]));
+    for (const entry of loadSystemEmoji()) emojis.set(entry[0], entry);
+    for (const [value, title] of emoji) {
+      const entry = emojis.get(value);
+      if (entry) entry[2] = [entry[2], title, t(title)].filter(Boolean).join(' ');
+    }
+    this.emojis = [...emojis.values()];
 
     this.indicator = new PanelMenu.Button(0.5, t('Área de transferência'));
     this.indicator.add_child(new St.Icon({
@@ -267,7 +268,7 @@ export default class ClipboardExtension extends Extension {
 
     const isEmoji = tab === 'emoji';
     const mood = isEmoji ? 'all' : this.kaomojiTab();
-    const results = (isEmoji ? this.emojis() : kaomoji).filter(([value, title, keywords = '', groups]) =>
+    const results = (isEmoji ? this.emojis : kaomoji).filter(([value, title, keywords = '', groups]) =>
       (mood === 'all' || groups.has(mood)) && matches(`${value} ${title} ${keywords}`, query));
     if (!results.length) {
       this.addHint(t('Nenhum resultado para esse termo.'));
@@ -409,7 +410,6 @@ export default class ClipboardExtension extends Extension {
     if (this.selectionHandler) this.selection.disconnect(this.selectionHandler);
     this.selectionHandler = 0;
     this.cancelRequest();
-    this.emojiLoad?.cancel();
     this.klipy?.close();
     for (const handle of this.effects ?? []) handle.dispose();
     this.effects = [];
