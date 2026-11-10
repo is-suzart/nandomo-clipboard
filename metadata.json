@@ -1,0 +1,10 @@
+{
+  "uuid": "nandomo-clipboard@is-suzart",
+  "name": "Nandomo Clipboard",
+  "description": "Lê alterações de texto na área de transferência para manter um histórico local. Inclui itens fixados, emojis, kaomojis e busca de GIFs no Klipy.",
+  "shell-version": [
+    "51"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.nandomo-clipboard",
+  "url": "https://github.com/is-suzart/nandomo-clipboard"
+}
